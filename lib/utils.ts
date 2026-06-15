@@ -1,9 +1,10 @@
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 
-// Public CDN render endpoint for the images bucket (transforms + srcset).
-export function imageUrl(storagePath: string, width?: number): string {
-  const base = `${SUPABASE_URL}/storage/v1/render/image/public/images/${storagePath}`
-  return width ? `${base}?width=${width}&resize=contain` : base
+// Public object URL for the images bucket. Uses the plain object endpoint
+// (works on all plans). Image transforms require the Pro plan; Next.js
+// handles optimization/resizing on top of these URLs.
+export function imageUrl(storagePath: string): string {
+  return `${SUPABASE_URL}/storage/v1/object/public/images/${storagePath}`
 }
 
 // Back-compat alias used by gallery components.
