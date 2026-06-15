@@ -120,6 +120,18 @@ export function GalleryEditor({ gallery, clientName, clientSlug, initialAssets }
     router.refresh()
   }
 
+  async function deleteGallery() {
+    const ok = window.confirm(`¿Borrar la galería "${gallery.title}" y sus ${assets.length} fotos? Esta acción no se puede deshacer.`)
+    if (!ok) return
+
+    const paths = assets.map((a) => a.storage_path)
+    if (paths.length > 0) await supabase.storage.from('images').remove(paths)
+    await supabase.from('assets').delete().eq('gallery_id', gallery.id)
+    await supabase.from('galleries').delete().eq('id', gallery.id)
+    router.push('/studio/galleries')
+    router.refresh()
+  }
+
   function onDrop(targetIndex: number) {
     const from = dragIndex.current
     dragIndex.current = null
@@ -156,6 +168,13 @@ export function GalleryEditor({ gallery, clientName, clientSlug, initialAssets }
             className={['px-4 py-2.5 text-2xs uppercase tracking-widest transition-colors', published ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-ink text-canvas hover:bg-ink/90'].join(' ')}
           >
             {published ? 'Publicada' : 'Publicar'}
+          </button>
+          <button
+            onClick={deleteGallery}
+            title="Borrar galería"
+            className="px-4 py-2.5 border border-border text-muted text-2xs uppercase tracking-widest hover:border-red-500 hover:text-red-500 transition-colors"
+          >
+            Borrar
           </button>
         </div>
       </div>
