@@ -3,23 +3,26 @@
 import { useEffect, useCallback, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import type { Photo } from '@/lib/supabase/types'
+import type { Asset } from '@/lib/supabase/types'
 import { photoUrl } from '@/lib/utils'
+import type { GalleryMeta } from './MasonryGrid'
 
 interface LightboxProps {
-  photos: Photo[]
+  assets: Asset[]
   initialIndex: number
-  galleryMeta: { title: string; location: string | null; shoot_date: string | null; lens: string | null }
+  galleryMeta: GalleryMeta
   onClose: () => void
 }
 
-export function Lightbox({ photos, initialIndex, galleryMeta, onClose }: LightboxProps) {
+export function Lightbox({ assets, initialIndex, galleryMeta, onClose }: LightboxProps) {
   const [index, setIndex] = useState(initialIndex)
   const [direction, setDirection] = useState(0)
 
-  const photo = photos[index]
+  const asset = assets[index]
+  const aw = asset.width ?? 4
+  const ah = asset.height ?? 3
   const hasPrev = index > 0
-  const hasNext = index < photos.length - 1
+  const hasNext = index < assets.length - 1
 
   const prev = useCallback(() => {
     if (!hasPrev) return
@@ -64,7 +67,17 @@ export function Lightbox({ photos, initialIndex, galleryMeta, onClose }: Lightbo
     setTouchStart(null)
   }
 
-  const src = photoUrl(photo.storage_path)
+  const src = photoUrl(asset.storage_path)
+
+  // Neighbor preloading for instant prev/next.
+  useEffect(() => {
+    ;[index - 1, index + 1].forEach((i) => {
+      const a = assets[i]
+      if (!a) return
+      const img = new window.Image()
+      img.src = photoUrl(a.storage_path)
+    })
+  }, [index, assets])
 
   return (
     <AnimatePresence>
@@ -110,7 +123,7 @@ export function Lightbox({ photos, initialIndex, galleryMeta, onClose }: Lightbo
 
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
-              key={photo.id}
+              key={asset.id}
               custom={direction}
               initial={{ opacity: 0, x: direction * 40 }}
               animate={{ opacity: 1, x: 0 }}
@@ -123,14 +136,14 @@ export function Lightbox({ photos, initialIndex, galleryMeta, onClose }: Lightbo
                 style={{
                   maxWidth: '100%',
                   maxHeight: '100%',
-                  aspectRatio: `${photo.width} / ${photo.height}`,
-                  width: photo.width > photo.height ? '100%' : 'auto',
-                  height: photo.width <= photo.height ? '100%' : 'auto',
+                  aspectRatio: `${aw} / ${ah}`,
+                  width: aw > ah ? '100%' : 'auto',
+                  height: aw <= ah ? '100%' : 'auto',
                 }}
               >
                 <Image
                   src={src}
-                  alt={photo.caption ?? galleryMeta.title}
+                  alt={asset.caption ?? galleryMeta.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 85vw"
                   quality={90}
@@ -157,15 +170,15 @@ export function Lightbox({ photos, initialIndex, galleryMeta, onClose }: Lightbo
         {/* Bottom bar */}
         <div className="flex-none flex items-end justify-between px-6 py-5 gap-4">
           <div className="space-y-0.5">
-            {photo.caption && (
-              <p className="text-xs text-white/60">{photo.caption}</p>
+            {asset.caption && (
+              <p className="text-xs text-white/60">{asset.caption}</p>
             )}
             <p className="text-2xs text-white/25 uppercase tracking-widest">
               {[galleryMeta.location, galleryMeta.lens].filter(Boolean).join(' · ')}
             </p>
           </div>
           <span className="text-2xs text-white/30 tracking-widest tabular-nums flex-none">
-            {index + 1} / {photos.length}
+            {index + 1} / {assets.length}
           </span>
         </div>
       </motion.div>

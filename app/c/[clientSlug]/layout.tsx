@@ -1,38 +1,35 @@
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { Nav } from '@/components/Nav'
+import { ClientNav } from '@/components/client/ClientNav'
 import type { Client } from '@/lib/supabase/types'
 
-export default async function PortalLayout({
+export default async function ClientLayout({
   children,
   params,
 }: {
   children: React.ReactNode
-  params: Promise<{ client: string }>
+  params: Promise<{ clientSlug: string }>
 }) {
-  const { client: slug } = await params
+  const { clientSlug } = await params
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  // RLS: a client sees only their own client row; an admin sees all.
   const { data } = await supabase
     .from('clients')
-    .select('*, client_users!inner(user_id)')
-    .eq('slug', slug)
-    .eq('client_users.user_id', user.id)
+    .select('*')
+    .eq('slug', clientSlug)
     .single()
 
   if (!data) notFound()
-
-  const client = data as unknown as Client
+  const client = data as Client
 
   return (
     <>
-      <Nav client={client} />
-      <div className="pt-14 sm:pt-14 min-h-screen">
-        {children}
-      </div>
+      <ClientNav clientSlug={client.slug} clientName={client.name} />
+      <div className="pt-14 min-h-screen">{children}</div>
     </>
   )
 }

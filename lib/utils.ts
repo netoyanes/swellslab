@@ -1,11 +1,17 @@
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 
-export function photoUrl(storagePath: string): string {
-  return `${SUPABASE_URL}/storage/v1/render/image/public/photos/${storagePath}`
+// Public CDN render endpoint for the images bucket (transforms + srcset).
+export function imageUrl(storagePath: string, width?: number): string {
+  const base = `${SUPABASE_URL}/storage/v1/render/image/public/images/${storagePath}`
+  return width ? `${base}?width=${width}&resize=contain` : base
 }
 
-export function documentUrl(storagePath: string): string {
-  return `${SUPABASE_URL}/storage/v1/object/public/documents/${storagePath}`
+// Back-compat alias used by gallery components.
+export const photoUrl = (storagePath: string) => imageUrl(storagePath)
+
+// Public object URL (non-transformed), for downloads.
+export function objectUrl(bucket: string, storagePath: string): string {
+  return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${storagePath}`
 }
 
 export function formatCurrency(amount: number, currency = 'MXN'): string {
