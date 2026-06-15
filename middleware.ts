@@ -11,22 +11,22 @@ export async function middleware(request: NextRequest) {
 
   let res = NextResponse.next({ request })
 
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll()
-      },
-      setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-        res = NextResponse.next({ request })
-        cookiesToSet.forEach(({ name, value, options }) =>
-          res.cookies.set(name, value, options as Parameters<typeof res.cookies.set>[2]),
-        )
-      },
-    },
-  })
-
   try {
+    const supabase = createServerClient(supabaseUrl, supabaseKey, {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          res = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            res.cookies.set(name, value, options as Parameters<typeof res.cookies.set>[2]),
+          )
+        },
+      },
+    })
+
     const { data: { user } } = await supabase.auth.getUser()
     const { pathname } = request.nextUrl
 
