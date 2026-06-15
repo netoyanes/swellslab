@@ -3,14 +3,18 @@ import { createClient } from '@/lib/supabase/server'
 import { shootMeta } from '@/lib/utils'
 import type { Gallery, Client, Asset } from '@/lib/supabase/types'
 
+export const dynamic = 'force-dynamic'
+
 type Row = Gallery & { clients: Pick<Client, 'name' | 'slug'> | null; assets: Pick<Asset, 'id'>[] }
 
 export default async function GalleriesList() {
   const supabase = await createClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('galleries')
     .select('id, title, slug, shoot_date, location, lens, published, display_order, client_id, clients(name, slug), assets(id)')
-    .order('display_order', { ascending: true })
+    .order('created_at', { ascending: false })
+
+  if (error) console.error('galleries query error:', error)
 
   const galleries = (data ?? []) as unknown as Row[]
 
