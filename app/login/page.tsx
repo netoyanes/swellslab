@@ -19,27 +19,33 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const supabase = createClient()
 
-    if (mode === 'password') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        setError('Correo o contraseña incorrectos.')
-        setLoading(false)
+    try {
+      const supabase = createClient()
+
+      if (mode === 'password') {
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) {
+          setError(`No se pudo entrar: ${error.message}`)
+          setLoading(false)
+          return
+        }
+        router.push('/')
+        router.refresh()
         return
       }
-      router.push('/')
-      router.refresh()
-      return
-    }
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
-    })
-    if (error) setError('No pudimos enviar el enlace. Intenta de nuevo.')
-    else setSent(true)
-    setLoading(false)
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      })
+      if (error) setError(`No pudimos enviar el enlace: ${error.message}`)
+      else setSent(true)
+      setLoading(false)
+    } catch (err) {
+      setError(`Error: ${err instanceof Error ? err.message : String(err)}`)
+      setLoading(false)
+    }
   }
 
   const field = 'w-full bg-transparent border-b border-border pb-3 text-sm text-ink placeholder:text-muted/50 outline-none focus:border-ink transition-colors'
