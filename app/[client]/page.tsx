@@ -18,13 +18,14 @@ export default async function DashboardPage({ params }: PageProps) {
   const { client: slug } = await params
   const supabase = await createClient()
 
-  const { data: client } = await supabase
+  const { data: clientData } = await supabase
     .from('clients')
     .select('id, name')
     .eq('slug', slug)
     .single()
 
-  if (!client) notFound()
+  if (!clientData) notFound()
+  const client = clientData as { id: string; name: string }
 
   const { data: galleries } = await supabase
     .from('galleries')

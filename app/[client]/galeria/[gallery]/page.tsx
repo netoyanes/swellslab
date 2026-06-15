@@ -23,13 +23,14 @@ export default async function GalleryPage({ params }: PageProps) {
   const { client: clientSlug, gallery: gallerySlug } = await params
   const supabase = await createClient()
 
-  const { data: client } = await supabase
+  const { data: clientData } = await supabase
     .from('clients')
     .select('id')
     .eq('slug', clientSlug)
     .single()
 
-  if (!client) notFound()
+  if (!clientData) notFound()
+  const client = clientData as { id: string }
 
   const { data: gallery } = await supabase
     .from('galleries')
