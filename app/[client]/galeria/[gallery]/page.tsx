@@ -3,6 +3,9 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { MasonryGrid } from '@/components/gallery/MasonryGrid'
 import { shootMeta } from '@/lib/utils'
+import type { Gallery, Photo } from '@/lib/supabase/types'
+
+type GalleryWithPhotos = Gallery & { photos: Photo[] }
 
 interface PageProps {
   params: Promise<{ client: string; gallery: string }>
@@ -16,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .select('title')
     .eq('slug', gallerySlug)
     .single()
-  return { title: data?.title ?? 'Galería' }
+  return { title: (data as { title: string } | null)?.title ?? 'Galería' }
 }
 
 export default async function GalleryPage({ params }: PageProps) {
@@ -32,18 +35,17 @@ export default async function GalleryPage({ params }: PageProps) {
   if (!clientData) notFound()
   const client = clientData as { id: string }
 
-  const { data: gallery } = await supabase
+  const { data } = await supabase
     .from('galleries')
-    .select(`
-      id, title, slug, shoot_date, location, lens, description, published,
-      photos(id, storage_path, width, height, caption, display_order)
-    `)
+    .select(`id, title, slug, shoot_date, location, lens, description, published,
+      photos(id, storage_path, width, height, caption, display_order)`)
     .eq('client_id', client.id)
     .eq('slug', gallerySlug)
     .eq('published', true)
     .single()
 
-  if (!gallery) notFound()
+  if (!data) notFound()
+  const gallery = data as unknown as GalleryWithPhotos
 
   const photos = [...(gallery.photos ?? [])].sort(
     (a, b) => a.display_order - b.display_order,
@@ -58,7 +60,6 @@ export default async function GalleryPage({ params }: PageProps) {
 
   return (
     <main>
-      {/* Gallery header */}
       <div className="max-w-screen-xl mx-auto px-6 pt-14 pb-10">
         <div className="max-w-xl">
           <p className="text-2xs uppercase tracking-widest text-muted mb-3">
@@ -75,7 +76,6 @@ export default async function GalleryPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Masonry grid — edge to edge */}
       {photos.length > 0 ? (
         <MasonryGrid photos={photos} gallery={galleryMeta} />
       ) : (
@@ -84,7 +84,6 @@ export default async function GalleryPage({ params }: PageProps) {
         </div>
       )}
 
-      {/* Bottom spacer */}
       <div className="h-24" />
     </main>
   )

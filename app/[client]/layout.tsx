@@ -26,7 +26,7 @@ export default async function PortalLayout({
   if (!clientData) notFound()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { client_users: _, ...client } = clientData
+  const { client_users: _, ...client } = clientData as typeof clientData & { client_users: unknown }
 
   return (
     <>

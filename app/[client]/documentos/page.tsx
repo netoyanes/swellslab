@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { documentUrl, formatDate } from '@/lib/utils'
+import type { Document } from '@/lib/supabase/types'
 
 export const metadata: Metadata = { title: 'Documentos' }
 
@@ -29,11 +30,13 @@ export default async function DocumentsPage({
   if (!clientData) notFound()
   const client = clientData as { id: string; name: string }
 
-  const { data: documents } = await supabase
+  const { data } = await supabase
     .from('documents')
     .select('*')
     .eq('client_id', client.id)
     .order('created_at', { ascending: false })
+
+  const documents = (data ?? []) as Document[]
 
   return (
     <main className="max-w-screen-lg mx-auto px-6 py-16 md:py-20">
@@ -46,7 +49,7 @@ export default async function DocumentsPage({
         </h1>
       </div>
 
-      {!documents?.length ? (
+      {!documents.length ? (
         <p className="text-muted text-sm">No hay documentos disponibles.</p>
       ) : (
         <ul className="divide-y divide-border">

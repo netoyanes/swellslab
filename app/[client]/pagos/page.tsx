@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import type { Invoice } from '@/lib/supabase/types'
 
 export const metadata: Metadata = { title: 'Pagos' }
 
@@ -29,14 +30,15 @@ export default async function BillingPage({
   if (!clientData) notFound()
   const client = clientData as { id: string; name: string }
 
-  const { data: invoices } = await supabase
+  const { data } = await supabase
     .from('invoices')
     .select('*')
     .eq('client_id', client.id)
     .neq('status', 'draft')
     .order('created_at', { ascending: false })
 
-  const pending = (invoices ?? []).filter(i => i.status === 'sent' || i.status === 'overdue')
+  const invoices = (data ?? []) as Invoice[]
+  const pending = invoices.filter(i => i.status === 'sent' || i.status === 'overdue')
   const totalPending = pending.reduce((s, i) => s + i.amount, 0)
 
   return (
@@ -50,7 +52,6 @@ export default async function BillingPage({
         </h1>
       </div>
 
-      {/* Pending summary */}
       {pending.length > 0 && (
         <div className="mb-12 p-6 border border-border bg-surface">
           <p className="text-2xs uppercase tracking-widest text-muted mb-1">
@@ -62,7 +63,7 @@ export default async function BillingPage({
         </div>
       )}
 
-      {!invoices?.length ? (
+      {!invoices.length ? (
         <p className="text-muted text-sm">No hay facturas registradas.</p>
       ) : (
         <ul className="divide-y divide-border">

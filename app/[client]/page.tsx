@@ -4,6 +4,9 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { photoUrl, shootMeta } from '@/lib/utils'
+import type { Gallery, Photo } from '@/lib/supabase/types'
+
+type GalleryRow = Gallery & { photos: Photo[] }
 
 interface PageProps {
   params: Promise<{ client: string }>
@@ -27,25 +30,23 @@ export default async function DashboardPage({ params }: PageProps) {
   if (!clientData) notFound()
   const client = clientData as { id: string; name: string }
 
-  const { data: galleries } = await supabase
+  const { data } = await supabase
     .from('galleries')
-    .select(`
-      id, title, slug, shoot_date, location, lens, description,
-      photos(id, storage_path, width, height, display_order)
-    `)
+    .select(`id, title, slug, shoot_date, location, lens, description,
+      photos(id, storage_path, width, height, display_order)`)
     .eq('client_id', client.id)
     .eq('published', true)
     .order('display_order', { ascending: true })
 
-  const enriched = (galleries ?? []).map(g => {
+  const galleries = (data ?? []) as unknown as GalleryRow[]
+
+  const enriched = galleries.map(g => {
     const sorted = [...(g.photos ?? [])].sort((a, b) => a.display_order - b.display_order)
-    const cover = sorted[0]
-    return { ...g, photos: sorted, cover }
+    return { ...g, photos: sorted, cover: sorted[0] ?? null }
   })
 
   return (
     <main className="max-w-screen-xl mx-auto px-6 py-16 md:py-20">
-      {/* Header */}
       <div className="mb-16">
         <p className="text-2xs uppercase tracking-widest text-muted mb-3">
           Galerías
@@ -65,7 +66,6 @@ export default async function DashboardPage({ params }: PageProps) {
               href={`/${slug}/galeria/${gallery.slug}`}
               className="group bg-canvas block overflow-hidden"
             >
-              {/* Cover image */}
               <div className="relative aspect-[4/3] overflow-hidden bg-border">
                 {gallery.cover ? (
                   <Image
@@ -81,7 +81,6 @@ export default async function DashboardPage({ params }: PageProps) {
                 )}
               </div>
 
-              {/* Info */}
               <div className="px-6 py-5">
                 <h2 className="font-display text-2xl text-ink font-light group-hover:opacity-70 transition-opacity">
                   {gallery.title}
