@@ -7,14 +7,14 @@ export default async function RootPage() {
 
   if (!user) redirect('/login')
 
-  // Find the client associated with this user
-  const { data: clientUser } = await supabase
+  const { data } = await supabase
     .from('client_users')
     .select('clients(slug)')
     .eq('user_id', user.id)
     .single()
 
-  const slug = (clientUser?.clients as { slug: string } | null)?.slug
+  const row = data as { clients: { slug: string } | null } | null
+  const slug = row?.clients?.slug
   if (slug) redirect(`/${slug}`)
 
   redirect('/login')
