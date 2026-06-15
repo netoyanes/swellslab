@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Nav } from '@/components/Nav'
+import type { Client } from '@/lib/supabase/types'
 
 export default async function PortalLayout({
   children,
@@ -15,18 +16,16 @@ export default async function PortalLayout({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Fetch client and verify the user belongs to it
-  const { data: clientData } = await supabase
+  const { data } = await supabase
     .from('clients')
     .select('*, client_users!inner(user_id)')
     .eq('slug', slug)
     .eq('client_users.user_id', user.id)
     .single()
 
-  if (!clientData) notFound()
+  if (!data) notFound()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { client_users: _, ...client } = clientData as typeof clientData & { client_users: unknown }
+  const client = data as unknown as Client
 
   return (
     <>
