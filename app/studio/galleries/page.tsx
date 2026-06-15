@@ -30,6 +30,9 @@ export default async function GalleriesList() {
         </Link>
       </div>
 
+      {error && <pre className="text-red-500 text-xs mb-4">{JSON.stringify(error, null, 2)}</pre>}
+      <p className="text-xs text-muted mb-4">debug: {galleries.length} galerías</p>
+
       {galleries.length === 0 ? (
         <p className="text-muted text-sm">Aún no hay galerías. Crea la primera.</p>
       ) : (
