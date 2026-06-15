@@ -114,10 +114,12 @@ on conflict (id) do nothing;
 -- =============================================================
 
 -- Helper: returns the client_id for the current authenticated user
-create or replace function auth.client_id()
+-- Lives in public schema (auth schema is restricted in Supabase)
+create or replace function public.current_client_id()
 returns uuid
 language sql stable
 security definer
+set search_path = public
 as $$
   select client_id
   from client_users
@@ -129,7 +131,7 @@ $$;
 alter table clients enable row level security;
 
 create policy "clients: own row" on clients
-  for select using (id = auth.client_id());
+  for select using (id = public.current_client_id());
 
 -- client_users
 alter table client_users enable row level security;
@@ -141,25 +143,25 @@ create policy "client_users: own rows" on client_users
 alter table galleries enable row level security;
 
 create policy "galleries: own client" on galleries
-  for select using (client_id = auth.client_id() and published = true);
+  for select using (client_id = public.current_client_id() and published = true);
 
 -- photos
 alter table photos enable row level security;
 
 create policy "photos: own client" on photos
-  for select using (client_id = auth.client_id());
+  for select using (client_id = public.current_client_id());
 
 -- documents
 alter table documents enable row level security;
 
 create policy "documents: own client" on documents
-  for select using (client_id = auth.client_id());
+  for select using (client_id = public.current_client_id());
 
 -- invoices
 alter table invoices enable row level security;
 
 create policy "invoices: own client" on invoices
-  for select using (client_id = auth.client_id());
+  for select using (client_id = public.current_client_id());
 
 -- Storage: photos bucket (public read, authenticated upload via service role)
 create policy "photos: public read" on storage.objects
