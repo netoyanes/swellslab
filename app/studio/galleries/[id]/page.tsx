@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { GalleryEditor } from '@/components/studio/GalleryEditor'
+import { generateShareToken } from './actions'
 import type { Gallery, Asset, Client } from '@/lib/supabase/types'
 
 type Row = Gallery & { clients: Pick<Client, 'name' | 'slug'> | null }
@@ -32,6 +33,7 @@ export default async function GalleryEditPage({ params }: { params: Promise<{ id
       clientName={gallery.clients?.name ?? ''}
       clientSlug={gallery.clients?.slug ?? ''}
       initialAssets={assets}
+      generateShareToken={generateShareToken}
     />
   )
 }

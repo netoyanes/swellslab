@@ -13,6 +13,7 @@ interface Props {
   clientName: string
   clientSlug: string
   initialAssets: Asset[]
+  generateShareToken: (id: string) => Promise<string>
 }
 
 // Reads natural dimensions of an image File in the browser.
@@ -32,7 +33,7 @@ function readDimensions(file: File): Promise<{ width: number; height: number }> 
   })
 }
 
-export function GalleryEditor({ gallery, clientName, clientSlug, initialAssets }: Props) {
+export function GalleryEditor({ gallery, clientName, clientSlug, initialAssets, generateShareToken }: Props) {
   const router = useRouter()
   const supabase = createClient()
 
@@ -122,12 +123,9 @@ export function GalleryEditor({ gallery, clientName, clientSlug, initialAssets }
     router.refresh()
   }
 
-  async function generateShareLink() {
-    const token = shareToken ?? crypto.randomUUID()
-    if (!shareToken) {
-      await supabase.from('galleries').update({ share_token: token }).eq('id', gallery.id)
-      setShareToken(token)
-    }
+  async function handleShare() {
+    const token = await generateShareToken(gallery.id)
+    setShareToken(token)
     const url = `${window.location.origin}/preview/${token}`
     await navigator.clipboard.writeText(url)
     setShareCopied(true)
@@ -173,7 +171,7 @@ export function GalleryEditor({ gallery, clientName, clientSlug, initialAssets }
         </div>
         <div className="flex items-center gap-3 flex-none">
           <button
-            onClick={generateShareLink}
+            onClick={handleShare}
             className="px-4 py-2.5 border border-border text-ink text-2xs uppercase tracking-widest hover:border-ink transition-colors"
           >
             {shareCopied ? '✓ Link copiado' : shareToken ? 'Copiar link' : 'Compartir'}
