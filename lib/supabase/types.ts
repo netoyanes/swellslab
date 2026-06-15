@@ -44,6 +44,7 @@ export interface Gallery {
   cover_asset_id: string | null
   published: boolean
   display_order: number
+  share_token: string | null
   created_at: string
 }
 

@@ -18,7 +18,8 @@ const config: Config = {
       },
       fontFamily: {
         display: ['var(--font-cormorant)', 'Georgia', 'serif'],
-        sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-ibm-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-ibm-mono)', 'monospace'],
       },
       fontSize: {
         '2xs': ['0.65rem', { lineHeight: '1rem', letterSpacing: '0.06em' }],

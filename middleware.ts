@@ -30,6 +30,9 @@ export async function middleware(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     const { pathname } = request.nextUrl
 
+    // Public routes — no auth needed
+    if (pathname.startsWith('/preview/')) return res
+
     const isStudio = pathname.startsWith('/studio')
     const isClient = pathname.startsWith('/c/')
 

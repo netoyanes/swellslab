@@ -25,8 +25,8 @@ export function StudioNav() {
     <header className="fixed top-0 inset-x-0 z-40 h-14 bg-ink text-canvas border-b border-white/10">
       <div className="max-w-screen-2xl mx-auto h-full px-6 flex items-center justify-between">
         <div className="flex items-center gap-10">
-          <Link href="/studio" className="font-display text-base tracking-widest uppercase">
-            Studio
+          <Link href="/studio" className="font-mono text-sm tracking-[0.2em] uppercase text-canvas">
+            Swells Lab
           </Link>
           <nav className="hidden sm:flex items-center gap-7">
             {links.map(({ label, href, enabled, exact }) => {

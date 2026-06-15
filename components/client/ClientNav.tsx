@@ -24,9 +24,13 @@ export function ClientNav({ clientSlug, clientName }: { clientSlug: string; clie
   return (
     <header className="fixed top-0 inset-x-0 z-40 h-14 bg-canvas/90 backdrop-blur-sm border-b border-border">
       <div className="max-w-screen-xl mx-auto h-full px-6 flex items-center justify-between">
-        <Link href={base} className="font-display text-base tracking-wide text-ink hover:text-ink/70 transition-colors">
-          {clientName}
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href={base} className="font-mono text-sm tracking-[0.2em] uppercase hover:opacity-70 transition-opacity" style={{ color: '#333232' }}>
+            Swells Lab
+          </Link>
+          <span className="text-border">·</span>
+          <span className="font-sans text-xs text-muted uppercase tracking-widest">{clientName}</span>
+        </div>
 
         <nav className="hidden sm:flex items-center gap-8">
           {links.map(({ label, href, enabled }) => {

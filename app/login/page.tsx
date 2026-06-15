@@ -55,7 +55,7 @@ export default function LoginPage() {
     <main className="min-h-screen bg-canvas flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm animate-fade-up">
         <div className="mb-14 text-center">
-          <span className="font-display text-2xl tracking-widest uppercase text-ink/40 select-none">Swells Lab</span>
+          <span className="font-mono text-xl tracking-[0.22em] uppercase select-none" style={{ color: '#333232' }}>Swells Lab</span>
         </div>
 
         {sent ? (
