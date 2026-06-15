@@ -18,7 +18,7 @@ export default async function ClientHome({ params }: { params: Promise<{ clientS
 
   const { data } = await supabase
     .from('galleries')
-    .select('id, title, slug, shoot_date, location, lens, description, client_id, project_id, cover_asset_id, published, display_order, created_at, assets(id, storage_path, width, height, display_order)')
+    .select('id, title, slug, shoot_date, location, lens, description, client_id, project_id, cover_asset_id, published, display_order, created_at, assets!assets_gallery_id_fkey(id, storage_path, width, height, display_order)')
     .eq('client_id', client.id)
     .eq('published', true)
     .order('display_order', { ascending: true })

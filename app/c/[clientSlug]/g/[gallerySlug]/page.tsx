@@ -24,7 +24,7 @@ export default async function GalleryView({ params }: { params: Promise<{ client
 
   const { data } = await supabase
     .from('galleries')
-    .select('id, title, slug, shoot_date, location, lens, description, client_id, published, assets(id, gallery_id, client_id, type, bucket, storage_path, width, height, duration, caption, downloadable, display_order, created_at)')
+    .select('id, title, slug, shoot_date, location, lens, description, client_id, published, assets!assets_gallery_id_fkey(id, gallery_id, client_id, type, bucket, storage_path, width, height, duration, caption, downloadable, display_order, created_at)')
     .eq('client_id', client.id)
     .eq('slug', gallerySlug)
     .eq('published', true)

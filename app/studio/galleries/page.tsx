@@ -11,7 +11,7 @@ export default async function GalleriesList() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('galleries')
-    .select('id, title, slug, shoot_date, location, lens, published, display_order, client_id, clients(name, slug), assets(id)')
+    .select('id, title, slug, shoot_date, location, lens, published, display_order, client_id, clients(name, slug), assets!assets_gallery_id_fkey(id)')
     .order('created_at', { ascending: false })
 
   if (error) console.error('galleries query error:', error)
@@ -29,9 +29,6 @@ export default async function GalleriesList() {
           Nueva galería
         </Link>
       </div>
-
-      {error && <pre className="text-red-500 text-xs mb-4">{JSON.stringify(error, null, 2)}</pre>}
-      <p className="text-xs text-muted mb-4">debug: {galleries.length} galerías</p>
 
       {galleries.length === 0 ? (
         <p className="text-muted text-sm">Aún no hay galerías. Crea la primera.</p>
