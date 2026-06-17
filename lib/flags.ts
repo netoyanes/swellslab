@@ -8,6 +8,7 @@ export const FLAGS = {
   notifications: true,
   quotes: true,
   invoices: true,
+  aiDesigner: true,
   documents: false,
   videos: false,
   messaging: false,

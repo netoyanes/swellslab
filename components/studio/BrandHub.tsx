@@ -42,6 +42,12 @@ export function BrandHub({ brand, clientName, clientSlug, initialAssets, initial
             </div>
           </div>
         </div>
+        <Link
+          href={`/studio/brands/${brand.id}/designer`}
+          className="flex-none px-5 py-3 bg-ink text-canvas text-2xs uppercase tracking-widest hover:bg-ink/90 transition-colors"
+        >
+          ✦ Diseñador IA
+        </Link>
       </div>
 
       {/* Tabs */}

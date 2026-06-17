@@ -211,6 +211,24 @@ export interface Receipt {
 export type QuoteWithItems = Quote & { quote_items: QuoteItem[] }
 export type InvoiceWithItems = Invoice & { invoice_items: InvoiceItem[] }
 
+// ---- Fase 4: Agente IA Diseñador ---------------------------
+export interface AiConversation {
+  id: string
+  brand_id: string | null
+  title: string | null
+  created_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface AiMessage {
+  id: string
+  conversation_id: string
+  role: 'user' | 'assistant'
+  content: string
+  created_at: string
+}
+
 export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done'
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
 
