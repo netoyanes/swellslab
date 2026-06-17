@@ -11,12 +11,13 @@ function slugify(s: string) {
 
 interface Props {
   clients: { id: string; name: string; slug: string }[]
+  brandId?: string | null
 }
 
 const field = 'w-full bg-transparent border-b border-border pb-2.5 text-sm text-ink placeholder:text-muted/50 outline-none focus:border-ink transition-colors'
 const label = 'block text-2xs uppercase tracking-widest text-muted mb-1.5'
 
-export function NewGalleryForm({ clients }: Props) {
+export function NewGalleryForm({ clients, brandId = null }: Props) {
   const router = useRouter()
   const [clientId, setClientId] = useState(clients[0]?.id ?? '')
   const [title, setTitle] = useState('')
@@ -38,6 +39,7 @@ export function NewGalleryForm({ clients }: Props) {
       .from('galleries')
       .insert({
         client_id: clientId,
+        brand_id: brandId,
         title,
         slug: slugify(title),
         shoot_date: shootDate || null,

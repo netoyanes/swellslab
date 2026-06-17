@@ -50,7 +50,7 @@ export async function middleware(request: NextRequest) {
         .eq('id', user.id)
         .single()
       const role = (data as { role?: string } | null)?.role
-      if (role !== 'admin') {
+      if (!role || !['master', 'staff', 'admin'].includes(role)) {
         const url = request.nextUrl.clone()
         url.pathname = '/'
         return NextResponse.redirect(url)

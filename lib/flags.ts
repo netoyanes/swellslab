@@ -3,6 +3,7 @@
 // half-built is exposed.
 export const FLAGS = {
   galleries: true,
+  brands: true,
   documents: false,
   videos: false,
   invoices: false,

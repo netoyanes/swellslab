@@ -10,6 +10,7 @@ export function StudioNav() {
 
   const links = [
     { label: 'Inicio', href: '/studio', enabled: true, exact: true },
+    { label: 'Marcas', href: '/studio/brands', enabled: FLAGS.brands },
     { label: 'Galerías', href: '/studio/galleries', enabled: true },
     { label: 'Clientes', href: '/studio/clients', enabled: true },
     { label: 'Facturas', href: '/studio/invoices', enabled: FLAGS.invoices },

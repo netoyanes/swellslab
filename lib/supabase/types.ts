@@ -1,4 +1,6 @@
-export type Role = 'admin' | 'client'
+export type Role = 'master' | 'staff' | 'admin' | 'client'
+export type BrandAssetKind = 'logo' | 'photo' | 'file'
+export type DesignRefKind = 'color' | 'font' | 'figma' | 'drive' | 'link'
 export type AssetType = 'image' | 'video' | 'pdf' | 'doc'
 export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue'
 
@@ -34,6 +36,7 @@ export interface Project {
 export interface Gallery {
   id: string
   client_id: string
+  brand_id: string | null
   project_id: string | null
   title: string
   slug: string
@@ -97,6 +100,51 @@ export interface Message {
   author_role: Role
   body: string
   read_at: string | null
+  created_at: string
+}
+
+export interface Brand {
+  id: string
+  client_id: string
+  name: string
+  slug: string
+  tagline: string | null
+  logo_url: string | null
+  accent_color: string | null
+  active: boolean
+  client_visible: boolean
+  display_order: number
+  created_at: string
+}
+
+export interface BrandAsset {
+  id: string
+  brand_id: string
+  client_id: string
+  kind: BrandAssetKind
+  label: string | null
+  bucket: string
+  storage_path: string
+  mime_type: string | null
+  size_bytes: number | null
+  category: string | null
+  downloadable: boolean
+  client_visible: boolean
+  display_order: number
+  created_at: string
+}
+
+export interface DesignRef {
+  id: string
+  brand_id: string
+  kind: DesignRefKind
+  label: string
+  description: string | null
+  url: string | null
+  value: string | null
+  category: string | null
+  client_visible: boolean
+  display_order: number
   created_at: string
 }
 

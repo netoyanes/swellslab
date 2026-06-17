@@ -1,14 +1,15 @@
 import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/auth'
+import { isStudioRole } from '@/lib/roles'
 import { StudioNav } from '@/components/studio/StudioNav'
 
 export const metadata = { title: 'Studio' }
 
 export default async function StudioLayout({ children }: { children: React.ReactNode }) {
-  // Middleware already gates /studio to admins; this is defense-in-depth.
+  // Middleware already gates /studio to studio roles; this is defense-in-depth.
   const profile = await getProfile()
   if (!profile) redirect('/login')
-  if (profile.role !== 'admin') redirect('/')
+  if (!isStudioRole(profile.role)) redirect('/')
 
   return (
     <>

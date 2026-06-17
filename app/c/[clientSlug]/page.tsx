@@ -29,12 +29,42 @@ export default async function ClientHome({ params }: { params: Promise<{ clientS
     return { ...g, cover: sorted[0] ?? null, count: sorted.length }
   })
 
+  const { data: brandData } = await supabase
+    .from('brands')
+    .select('id, name, slug, tagline, accent_color')
+    .eq('client_id', client.id)
+    .eq('client_visible', true)
+    .eq('active', true)
+    .order('display_order')
+  const brands = (brandData ?? []) as { id: string; name: string; slug: string; tagline: string | null; accent_color: string | null }[]
+
   return (
     <main className="max-w-screen-xl mx-auto px-6 py-16 md:py-20">
       <div className="mb-16">
-        <p className="text-2xs uppercase tracking-widest text-muted mb-3">Galerías</p>
+        <p className="text-2xs uppercase tracking-widest text-muted mb-3">Portal</p>
         <h1 className="font-display text-4xl md:text-5xl text-ink font-light">{client.name}</h1>
       </div>
+
+      {brands.length > 0 && (
+        <section className="mb-16">
+          <p className="text-2xs uppercase tracking-widest text-muted mb-5">Marcas</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border">
+            {brands.map((b) => (
+              <Link key={b.id} href={`/c/${clientSlug}/marca/${b.slug}`} className="bg-canvas p-6 group hover:bg-surface transition-colors">
+                <div className="flex items-center gap-3">
+                  <span className="w-9 h-9 rounded-full flex-none border border-border" style={{ background: b.accent_color || '#E8E7E3' }} />
+                  <div className="min-w-0">
+                    <p className="text-sm text-ink truncate group-hover:opacity-60 transition">{b.name}</p>
+                    {b.tagline && <p className="text-2xs text-muted truncate">{b.tagline}</p>}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <p className="text-2xs uppercase tracking-widest text-muted mb-5">Galerías</p>
 
       {enriched.length === 0 ? (
         <p className="text-muted text-sm">No hay galerías publicadas aún.</p>
