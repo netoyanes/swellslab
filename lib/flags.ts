@@ -6,9 +6,10 @@ export const FLAGS = {
   brands: true,
   tasks: true,
   notifications: true,
+  quotes: true,
+  invoices: true,
   documents: false,
   videos: false,
-  invoices: false,
   messaging: false,
 } as const
 

@@ -31,7 +31,12 @@ export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
     // Public routes — no auth needed
-    if (pathname.startsWith('/preview/')) return res
+    if (
+      pathname.startsWith('/preview/') ||
+      pathname.startsWith('/q/') ||
+      pathname.startsWith('/pago/') ||
+      pathname.startsWith('/api/stripe/')
+    ) return res
 
     const isStudio = pathname.startsWith('/studio')
     const isClient = pathname.startsWith('/c/')

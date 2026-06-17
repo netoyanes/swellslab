@@ -15,6 +15,7 @@ export function StudioNav() {
     { label: 'Tareas', href: '/studio/tasks', enabled: FLAGS.tasks },
     { label: 'Galerías', href: '/studio/galleries', enabled: true },
     { label: 'Clientes', href: '/studio/clients', enabled: true },
+    { label: 'Cotizaciones', href: '/studio/quotes', enabled: FLAGS.quotes },
     { label: 'Facturas', href: '/studio/invoices', enabled: FLAGS.invoices },
     { label: 'Mensajes', href: '/studio/mensajes', enabled: FLAGS.messaging },
   ]

@@ -71,15 +71,24 @@ export interface Invoice {
   id: string
   client_id: string
   project_id: string | null
+  brand_id: string | null
+  quote_id: string | null
+  number: string | null
   title: string
+  notes: string | null
   amount: number
+  subtotal: number
+  tax_rate: number
+  tax_amount: number
   currency: string
   status: InvoiceStatus
   due_date: string | null
+  issued_at: string | null
   paid_at: string | null
   stripe_invoice_id: string | null
   stripe_payment_url: string | null
   created_at: string
+  updated_at: string | null
 }
 
 export interface Thread {
@@ -149,6 +158,58 @@ export interface DesignRef {
 }
 
 export type GalleryWithAssets = Gallery & { assets: Asset[] }
+
+// ---- Fase 3: Facturación -----------------------------------
+export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired'
+
+export interface LineItem {
+  id: string
+  description: string
+  qty: number
+  unit_price: number
+  amount: number
+  display_order: number
+}
+
+export type QuoteItem = LineItem & { quote_id: string }
+export type InvoiceItem = LineItem & { invoice_id: string }
+
+export interface Quote {
+  id: string
+  client_id: string | null
+  brand_id: string | null
+  number: string | null
+  title: string
+  status: QuoteStatus
+  currency: string
+  notes: string | null
+  valid_until: string | null
+  subtotal: number
+  tax_rate: number
+  tax_amount: number
+  total: number
+  share_token: string | null
+  accepted_at: string | null
+  created_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Receipt {
+  id: string
+  invoice_id: string
+  client_id: string | null
+  number: string | null
+  amount: number
+  currency: string
+  method: string | null
+  paid_at: string
+  stripe_payment_intent: string | null
+  created_at: string
+}
+
+export type QuoteWithItems = Quote & { quote_items: QuoteItem[] }
+export type InvoiceWithItems = Invoice & { invoice_items: InvoiceItem[] }
 
 export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done'
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
