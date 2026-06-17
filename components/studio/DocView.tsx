@@ -23,7 +23,7 @@ const HEAD: Record<Props['kind'], string> = { quote: 'Cotización', invoice: 'Fa
 export function DocView(p: Props) {
   const cur = p.currency ?? 'MXN'
   return (
-    <article className="bg-canvas border border-border p-8 md:p-12 max-w-3xl">
+    <article className="bg-canvas border border-border p-5 sm:p-8 md:p-12 max-w-3xl">
       <header className="flex items-start justify-between mb-10 pb-8 border-b border-border">
         <div>
           <p className="font-mono text-sm tracking-[0.2em] uppercase" style={{ color: '#333232' }}>Swells Lab</p>
@@ -43,21 +43,23 @@ export function DocView(p: Props) {
       </div>
 
       {p.items && p.items.length > 0 && (
-        <div className="border-t border-border mb-6">
-          <div className="grid grid-cols-12 gap-2 py-2 text-2xs uppercase tracking-widest text-muted border-b border-border">
-            <span className="col-span-6">Concepto</span>
-            <span className="col-span-2 text-right">Cant.</span>
-            <span className="col-span-2 text-right">P. unit.</span>
-            <span className="col-span-2 text-right">Importe</span>
-          </div>
-          {p.items.map((it) => (
-            <div key={it.id} className="grid grid-cols-12 gap-2 py-2.5 text-sm border-b border-border/60">
-              <span className="col-span-6 text-ink">{it.description}</span>
-              <span className="col-span-2 text-right tabular-nums text-muted">{it.qty}</span>
-              <span className="col-span-2 text-right tabular-nums text-muted">{formatCurrency(it.unit_price, cur)}</span>
-              <span className="col-span-2 text-right tabular-nums text-ink">{formatCurrency(it.amount, cur)}</span>
+        <div className="border-t border-border mb-6 overflow-x-auto -mx-1">
+          <div className="min-w-[400px] px-1">
+            <div className="grid grid-cols-12 gap-2 py-2 text-2xs uppercase tracking-widest text-muted border-b border-border">
+              <span className="col-span-6">Concepto</span>
+              <span className="col-span-2 text-right">Cant.</span>
+              <span className="col-span-2 text-right">P. unit.</span>
+              <span className="col-span-2 text-right">Importe</span>
             </div>
-          ))}
+            {p.items.map((it) => (
+              <div key={it.id} className="grid grid-cols-12 gap-2 py-2.5 text-sm border-b border-border/60">
+                <span className="col-span-6 text-ink">{it.description}</span>
+                <span className="col-span-2 text-right tabular-nums text-muted">{it.qty}</span>
+                <span className="col-span-2 text-right tabular-nums text-muted">{formatCurrency(it.unit_price, cur)}</span>
+                <span className="col-span-2 text-right tabular-nums text-ink">{formatCurrency(it.amount, cur)}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

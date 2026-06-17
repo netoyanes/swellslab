@@ -37,13 +37,15 @@ export default async function ClientBilling({ params }: { params: Promise<{ clie
           <h2 className="text-2xs uppercase tracking-widest text-muted mb-4">Cotizaciones</h2>
           <div className="border border-border divide-y divide-border">
             {quotes.map((q) => (
-              <div key={q.id} className="flex items-center gap-4 px-5 py-4">
-                <span className="font-mono text-xs text-muted w-28">{q.number}</span>
-                <span className="text-sm text-ink flex-1 truncate">{q.title}</span>
-                <span className="text-sm tabular-nums text-ink">{formatCurrency(q.total, q.currency)}</span>
-                {q.status === 'accepted'
-                  ? <span className="text-2xs uppercase tracking-widest text-emerald-700">Aceptada ✓</span>
-                  : q.share_token && <a href={`/q/${q.share_token}`} className="text-2xs uppercase tracking-widest text-ink hover:opacity-60">Revisar →</a>}
+              <div key={q.id} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-4 sm:px-5 py-4">
+                <span className="font-mono text-xs text-muted">{q.number}</span>
+                <span className="text-sm text-ink sm:flex-1">{q.title}</span>
+                <div className="flex items-center justify-between sm:contents gap-4">
+                  <span className="text-sm tabular-nums text-ink">{formatCurrency(q.total, q.currency)}</span>
+                  {q.status === 'accepted'
+                    ? <span className="text-2xs uppercase tracking-widest text-emerald-700">Aceptada ✓</span>
+                    : q.share_token && <a href={`/q/${q.share_token}`} className="text-2xs uppercase tracking-widest text-ink hover:opacity-60">Revisar →</a>}
+                </div>
               </div>
             ))}
           </div>
@@ -57,14 +59,16 @@ export default async function ClientBilling({ params }: { params: Promise<{ clie
         ) : (
           <div className="border border-border divide-y divide-border">
             {invoices.map((inv) => (
-              <div key={inv.id} className="flex items-center gap-4 px-5 py-4">
-                <span className="font-mono text-xs text-muted w-28">{inv.number}</span>
-                <span className="text-sm text-ink flex-1 truncate">{inv.title}</span>
+              <div key={inv.id} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-4 sm:px-5 py-4">
+                <span className="font-mono text-xs text-muted">{inv.number}</span>
+                <span className="text-sm text-ink sm:flex-1">{inv.title}</span>
                 {inv.due_date && <span className="text-2xs text-muted">Vence {formatDate(inv.due_date)}</span>}
-                <span className="text-sm tabular-nums text-ink">{formatCurrency(inv.amount, inv.currency)}</span>
-                {inv.status === 'paid'
-                  ? <span className="text-2xs uppercase tracking-widest text-emerald-700">Pagada ✓</span>
-                  : <PayButton invoiceId={inv.id} />}
+                <div className="flex items-center justify-between sm:contents gap-4">
+                  <span className="text-sm tabular-nums text-ink">{formatCurrency(inv.amount, inv.currency)}</span>
+                  {inv.status === 'paid'
+                    ? <span className="text-2xs uppercase tracking-widest text-emerald-700">Pagada ✓</span>
+                    : <PayButton invoiceId={inv.id} />}
+                </div>
               </div>
             ))}
           </div>
@@ -76,8 +80,8 @@ export default async function ClientBilling({ params }: { params: Promise<{ clie
           <h2 className="text-2xs uppercase tracking-widest text-muted mb-4">Recibos</h2>
           <div className="border border-border divide-y divide-border">
             {receipts.map((r) => (
-              <div key={r.id} className="flex items-center gap-4 px-5 py-4">
-                <span className="font-mono text-xs text-muted w-28">{r.number}</span>
+              <div key={r.id} className="flex items-center justify-between gap-4 px-4 sm:px-5 py-4">
+                <span className="font-mono text-xs text-muted">{r.number}</span>
                 <span className="text-sm text-muted flex-1">{formatDate(r.paid_at)}</span>
                 <span className="text-sm tabular-nums text-ink">{formatCurrency(r.amount, r.currency)}</span>
               </div>

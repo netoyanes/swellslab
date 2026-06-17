@@ -111,26 +111,28 @@ export function DocForm({ kind, clients, brands, initial, onSubmit }: Props) {
       </div>
 
       <label className={label}>Conceptos</label>
-      <div className="border border-border divide-y divide-border mb-3">
-        <div className="grid grid-cols-12 gap-2 px-3 py-2 bg-surface text-2xs uppercase tracking-widest text-muted">
-          <span className="col-span-6">Descripción</span>
-          <span className="col-span-2 text-right">Cant.</span>
-          <span className="col-span-2 text-right">P. unit.</span>
-          <span className="col-span-2 text-right">Importe</span>
-        </div>
-        {rows.map((r, i) => (
-          <div key={i} className="grid grid-cols-12 gap-2 px-3 py-2 items-center">
-            <input className="col-span-6 bg-transparent text-sm focus:outline-none" placeholder="Concepto" value={r.description} onChange={(e) => setRow(i, { description: e.target.value })} />
-            <input type="number" className="col-span-2 bg-transparent text-sm text-right focus:outline-none" value={r.qty} onChange={(e) => setRow(i, { qty: Number(e.target.value) })} />
-            <input type="number" className="col-span-2 bg-transparent text-sm text-right focus:outline-none" value={r.unit_price} onChange={(e) => setRow(i, { unit_price: Number(e.target.value) })} />
-            <div className="col-span-2 flex items-center justify-end gap-2">
-              <span className="text-sm tabular-nums text-ink">{formatCurrency((Number(r.qty) || 0) * (Number(r.unit_price) || 0))}</span>
-              {rows.length > 1 && (
-                <button onClick={() => setRows((rs) => rs.filter((_, idx) => idx !== i))} className="text-muted hover:text-red-500" aria-label="Eliminar">×</button>
-              )}
-            </div>
+      <div className="overflow-x-auto -mx-px mb-3">
+        <div className="border border-border divide-y divide-border min-w-[480px]">
+          <div className="grid grid-cols-12 gap-2 px-3 py-2 bg-surface text-2xs uppercase tracking-widest text-muted">
+            <span className="col-span-6">Descripción</span>
+            <span className="col-span-2 text-right">Cant.</span>
+            <span className="col-span-2 text-right">P. unit.</span>
+            <span className="col-span-2 text-right">Importe</span>
           </div>
-        ))}
+          {rows.map((r, i) => (
+            <div key={i} className="grid grid-cols-12 gap-2 px-3 py-2 items-center">
+              <input className="col-span-6 bg-transparent text-sm focus:outline-none" placeholder="Concepto" value={r.description} onChange={(e) => setRow(i, { description: e.target.value })} />
+              <input type="number" className="col-span-2 bg-transparent text-sm text-right focus:outline-none" value={r.qty} onChange={(e) => setRow(i, { qty: Number(e.target.value) })} />
+              <input type="number" className="col-span-2 bg-transparent text-sm text-right focus:outline-none" value={r.unit_price} onChange={(e) => setRow(i, { unit_price: Number(e.target.value) })} />
+              <div className="col-span-2 flex items-center justify-end gap-2">
+                <span className="text-sm tabular-nums text-ink">{formatCurrency((Number(r.qty) || 0) * (Number(r.unit_price) || 0))}</span>
+                {rows.length > 1 && (
+                  <button onClick={() => setRows((rs) => rs.filter((_, idx) => idx !== i))} className="text-muted hover:text-red-500" aria-label="Eliminar">×</button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       <button onClick={() => setRows((rs) => [...rs, blankRow()])} className="text-2xs uppercase tracking-widest text-ink hover:opacity-60 mb-8">+ Agregar concepto</button>
 

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -8,6 +9,7 @@ import { NotificationCenter } from '@/components/NotificationCenter'
 
 export function StudioNav() {
   const pathname = usePathname()
+  const [open, setOpen] = useState(false)
 
   const links = [
     { label: 'Inicio', href: '/studio', enabled: true, exact: true },
@@ -26,41 +28,80 @@ export function StudioNav() {
   }
 
   return (
-    <header className="fixed top-0 inset-x-0 z-40 h-14 bg-ink text-canvas border-b border-white/10">
-      <div className="max-w-screen-2xl mx-auto h-full px-6 flex items-center justify-between">
-        <div className="flex items-center gap-10">
-          <Link href="/studio" className="font-mono text-sm tracking-[0.2em] uppercase text-canvas">
-            Swells Lab
-          </Link>
-          <nav className="hidden sm:flex items-center gap-7">
+    <>
+      <header className="fixed top-0 inset-x-0 z-40 h-14 bg-ink text-canvas border-b border-white/10">
+        <div className="max-w-screen-2xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <Link href="/studio" className="font-mono text-sm tracking-[0.2em] uppercase text-canvas">
+              Swells Lab
+            </Link>
+            <nav className="hidden md:flex items-center gap-7">
+              {links.map(({ label, href, enabled, exact }) => {
+                const active = exact ? pathname === href : pathname.startsWith(href)
+                if (!enabled) {
+                  return (
+                    <span key={href} className="text-2xs uppercase tracking-widest text-canvas/30 cursor-default" title="Próximamente">
+                      {label}
+                    </span>
+                  )
+                }
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={['text-2xs uppercase tracking-widest transition-colors', active ? 'text-canvas' : 'text-canvas/50 hover:text-canvas'].join(' ')}
+                  >
+                    {label}
+                  </Link>
+                )
+              })}
+            </nav>
+          </div>
+          <div className="flex items-center gap-4">
+            {FLAGS.notifications && <NotificationCenter dark />}
+            <button onClick={signOut} className="hidden md:block text-2xs uppercase tracking-widest text-canvas/50 hover:text-canvas transition-colors">
+              Salir
+            </button>
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="md:hidden flex flex-col justify-center gap-1.5 w-6 h-6"
+              aria-label="Menú"
+            >
+              <span className={['block h-px bg-canvas transition-all', open ? 'rotate-45 translate-y-[3.5px]' : ''].join(' ')} />
+              <span className={['block h-px bg-canvas transition-all', open ? 'opacity-0' : ''].join(' ')} />
+              <span className={['block h-px bg-canvas transition-all', open ? '-rotate-45 -translate-y-[3.5px]' : ''].join(' ')} />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {open && (
+        <div className="fixed inset-0 z-30 md:hidden" onClick={() => setOpen(false)}>
+          <div className="absolute top-14 inset-x-0 bg-ink border-b border-white/10 py-4 px-6 flex flex-col gap-4" onClick={(e) => e.stopPropagation()}>
             {links.map(({ label, href, enabled, exact }) => {
               const active = exact ? pathname === href : pathname.startsWith(href)
               if (!enabled) {
                 return (
-                  <span key={href} className="text-2xs uppercase tracking-widest text-canvas/30 cursor-default" title="Próximamente">
-                    {label}
-                  </span>
+                  <span key={href} className="text-2xs uppercase tracking-widest text-canvas/30 cursor-default">{label}</span>
                 )
               }
               return (
                 <Link
                   key={href}
                   href={href}
-                  className={['text-2xs uppercase tracking-widest transition-colors', active ? 'text-canvas' : 'text-canvas/50 hover:text-canvas'].join(' ')}
+                  onClick={() => setOpen(false)}
+                  className={['text-sm uppercase tracking-widest transition-colors', active ? 'text-canvas' : 'text-canvas/50'].join(' ')}
                 >
                   {label}
                 </Link>
               )
             })}
-          </nav>
+            <button onClick={signOut} className="text-sm uppercase tracking-widest text-canvas/50 text-left mt-2 pt-4 border-t border-white/10">
+              Salir
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-5">
-          {FLAGS.notifications && <NotificationCenter dark />}
-          <button onClick={signOut} className="text-2xs uppercase tracking-widest text-canvas/50 hover:text-canvas transition-colors">
-            Salir
-          </button>
-        </div>
-      </div>
-    </header>
+      )}
+    </>
   )
 }
