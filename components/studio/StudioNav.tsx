@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { FLAGS } from '@/lib/flags'
+import { NotificationCenter } from '@/components/NotificationCenter'
 
 export function StudioNav() {
   const pathname = usePathname()
@@ -11,6 +12,7 @@ export function StudioNav() {
   const links = [
     { label: 'Inicio', href: '/studio', enabled: true, exact: true },
     { label: 'Marcas', href: '/studio/brands', enabled: FLAGS.brands },
+    { label: 'Tareas', href: '/studio/tasks', enabled: FLAGS.tasks },
     { label: 'Galerías', href: '/studio/galleries', enabled: true },
     { label: 'Clientes', href: '/studio/clients', enabled: true },
     { label: 'Facturas', href: '/studio/invoices', enabled: FLAGS.invoices },
@@ -51,9 +53,12 @@ export function StudioNav() {
             })}
           </nav>
         </div>
-        <button onClick={signOut} className="text-2xs uppercase tracking-widest text-canvas/50 hover:text-canvas transition-colors">
-          Salir
-        </button>
+        <div className="flex items-center gap-5">
+          {FLAGS.notifications && <NotificationCenter dark />}
+          <button onClick={signOut} className="text-2xs uppercase tracking-widest text-canvas/50 hover:text-canvas transition-colors">
+            Salir
+          </button>
+        </div>
       </div>
     </header>
   )

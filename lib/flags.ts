@@ -4,6 +4,8 @@
 export const FLAGS = {
   galleries: true,
   brands: true,
+  tasks: true,
+  notifications: true,
   documents: false,
   videos: false,
   invoices: false,

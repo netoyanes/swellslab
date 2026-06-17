@@ -150,5 +150,49 @@ export interface DesignRef {
 
 export type GalleryWithAssets = Gallery & { assets: Asset[] }
 
+export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done'
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
+
+export interface Task {
+  id: string
+  client_id: string | null
+  brand_id: string | null
+  title: string
+  description: string | null
+  status: TaskStatus
+  priority: TaskPriority
+  due_date: string | null
+  created_by: string | null
+  display_order: number
+  created_at: string
+  updated_at: string
+}
+
+export interface TaskComment {
+  id: string
+  task_id: string
+  author_id: string | null
+  body: string
+  created_at: string
+}
+
+export interface AppNotification {
+  id: string
+  user_id: string
+  type: string
+  title: string
+  body: string | null
+  link: string | null
+  read_at: string | null
+  created_at: string
+}
+
+export interface StudioUser {
+  id: string
+  email: string | null
+  full_name: string | null
+  role: Role
+}
+
 // Minimal Database shape kept loose; we cast query results explicitly.
 export type Database = Record<string, never>

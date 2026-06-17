@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { FLAGS } from '@/lib/flags'
+import { NotificationCenter } from '@/components/NotificationCenter'
 
 export function ClientNav({ clientSlug, clientName }: { clientSlug: string; clientName: string }) {
   const pathname = usePathname()
@@ -54,9 +55,12 @@ export function ClientNav({ clientSlug, clientName }: { clientSlug: string; clie
           })}
         </nav>
 
-        <button onClick={signOut} className="text-2xs uppercase tracking-widest text-muted hover:text-ink transition-colors">
-          Salir
-        </button>
+        <div className="flex items-center gap-5">
+          {FLAGS.notifications && <NotificationCenter />}
+          <button onClick={signOut} className="text-2xs uppercase tracking-widest text-muted hover:text-ink transition-colors">
+            Salir
+          </button>
+        </div>
       </div>
     </header>
   )

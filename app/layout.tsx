@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     template: '%s · Swells Lab',
   },
   description: 'Your private project space.',
+  manifest: '/manifest.json',
   robots: { index: false, follow: false },
 }
 
