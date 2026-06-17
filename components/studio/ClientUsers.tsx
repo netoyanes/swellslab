@@ -24,7 +24,7 @@ export function ClientUsers({ clientId, users }: { clientId: string; users: User
     const res = await inviteClientUser(clientId, email.trim().toLowerCase())
     setBusy(false)
     if ('error' in res) { setMsg({ ok: false, text: res.error }); return }
-    setMsg({ ok: true, text: `${email} agregado al portal. Puede entrar con magic link.` })
+    setMsg({ ok: true, text: `Invitación enviada a ${email}. Recibirá un enlace por correo.` })
     setEmail('')
     router.refresh()
   }

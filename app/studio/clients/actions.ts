@@ -54,15 +54,15 @@ export async function inviteClientUser(clientId: string, email: string): Promise
   let userId = list?.users.find((u) => u.email === email)?.id
 
   if (!userId) {
-    // Create user without password — they'll sign in via magic link.
-    const { data: newUser, error: createErr } = await admin.auth.admin.createUser({
-      email,
-      email_confirm: true,
+    // Send a proper invitation email with a one-click sign-in link.
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+    const { data: inv, error: invErr } = await admin.auth.admin.inviteUserByEmail(email, {
+      redirectTo: `${appUrl}/auth/callback?next=/`,
     })
-    if (createErr) return { error: createErr.message }
-    userId = newUser.user.id
+    if (invErr) return { error: invErr.message }
+    userId = inv.user.id
 
-    // Ensure profile row exists with client role
+    // Pre-create profile so the app knows them on first login.
     await admin.from('profiles').upsert({
       id: userId,
       email,

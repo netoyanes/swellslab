@@ -13,7 +13,7 @@ export default async function StudioLayout({ children }: { children: React.React
 
   return (
     <>
-      <StudioNav />
+      <StudioNav role={profile.role ?? undefined} />
       <div className="pt-14 min-h-screen bg-canvas">{children}</div>
     </>
   )

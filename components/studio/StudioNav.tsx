@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { FLAGS } from '@/lib/flags'
 import { NotificationCenter } from '@/components/NotificationCenter'
 
-export function StudioNav() {
+export function StudioNav({ role }: { role?: string }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
@@ -20,6 +20,7 @@ export function StudioNav() {
     { label: 'Cotizaciones', href: '/studio/quotes', enabled: FLAGS.quotes },
     { label: 'Facturas', href: '/studio/invoices', enabled: FLAGS.invoices },
     { label: 'Mensajes', href: '/studio/mensajes', enabled: FLAGS.messaging },
+    { label: 'Equipo', href: '/studio/settings/team', enabled: role === 'master' },
   ]
 
   async function signOut() {
