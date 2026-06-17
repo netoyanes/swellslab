@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { createBrand } from '@/app/studio/brands/actions'
 
 function slugify(s: string) {
   return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
@@ -31,26 +31,19 @@ export function NewBrandForm({ clients }: Props) {
     setSaving(true)
     setError(null)
 
-    const supabase = createClient()
-    const { data, error } = await supabase
-      .from('brands')
-      .insert({
-        client_id: clientId,
-        name,
-        slug: slugify(name),
-        tagline: tagline || null,
-        accent_color: accent || null,
-        active: true,
-      })
-      .select('id')
-      .single()
+    const res = await createBrand({
+      client_id: clientId,
+      name,
+      tagline: tagline || null,
+      accent_color: accent || null,
+    })
 
-    if (error) {
-      setError(error.message)
+    if ('error' in res) {
+      setError(res.error)
       setSaving(false)
       return
     }
-    router.push(`/studio/brands/${(data as { id: string }).id}`)
+    router.push(`/studio/brands/${res.id}`)
   }
 
   return (
